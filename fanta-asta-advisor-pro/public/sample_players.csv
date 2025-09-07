@@ -1,0 +1,5 @@
+name,role,team,is_penalty_taker,set_pieces,injury_status,rotation_risk,base_price,quality_score
+Mike Maignan,P,MIL,false,FK|CK,fit,0,10,85
+Federico Dimarco,D,INT,false,FK|CK,fit,0,18,88
+Hakan Calhanoglu,C,INT,true,FK|CK|PK,fit,0,25,92
+Lautaro Martinez,A,INT,false,FK,fit,0,45,94
