@@ -1,0 +1,1 @@
+export const clamp=(n:number,min:number,max:number)=>Math.max(min,Math.min(max,n)); export const norm=(x:number,a:number,b:number)=>b===a?0:clamp((x-a)/(b-a),0,1)
