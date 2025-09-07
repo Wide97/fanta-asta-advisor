@@ -1,4 +1,5 @@
 'use client'
+import { WEB_TIPS } from '@/data/consigli.web'
 import { useMemo } from 'react'
 import { useLeague, Role } from '@/stores/league'
 import { advisorSuggest } from '@/features/advisor/engine'
