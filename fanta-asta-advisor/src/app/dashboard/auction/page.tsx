@@ -46,7 +46,13 @@ export default function Auction(){
               <div className="flex gap-2 mt-2">
                 <button className="btn btn-primary" onClick={()=>setBid(b=>b+1)}>+1 <span className="ml-1 text-xs"><kbd>+</kbd></span></button>
                 <button className="btn btn-ghost" onClick={()=>setBid(b=>b+5)}>+5 <span className="ml-1 text-xs"><kbd>]</kbd></span></button>
-                <button className="btn btn-ghost" onClick={()=>setBid(b=>b+10)}>+10 <span className="ml-1 text-xs"><kbd>}</kbd></span></button>
+               <button
+  className="btn btn-ghost"
+  onClick={() => setBid(b => b + 10)}
+>
+  +10 <span className="ml-1 text-xs"><kbd>{'}'}</kbd></span>
+</button>
+
               </div>
             </div>
             <div className="flex items-end">
