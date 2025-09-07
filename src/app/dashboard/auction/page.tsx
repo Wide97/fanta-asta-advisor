@@ -12,9 +12,44 @@ export default function Auction() {
   const [playerId, setPlayerId] = useState('')
   const [bid, setBid] = useState(1)
 
+  // ----------------- helpers per fuzzy match -----------------
+  const norm = (s: string) =>
+    (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
+
+  const pickBest = (cands: any[]) =>
+    [...cands].sort(
+      (a, b) =>
+        (b.qualityScore || 0) - (a.qualityScore || 0) ||
+        (b.basePrice || 0) - (a.basePrice || 0) ||
+        a.name.localeCompare(b.name)
+    )[0]
+
+  function resolvePlayer(input: string, list: any[]) {
+    const n = norm(input)
+    if (!n) return null
+    // 1) id esatto
+    const byId = list.find(p => norm(p.id) === n)
+    if (byId) return byId
+    // 2) nome esatto
+    const exact = list.find(p => norm(p.name) === n)
+    if (exact) return exact
+    // 3) inizia con …
+    let c = list.filter(p => norm(p.name).startsWith(n))
+    if (c.length === 1) return c[0]
+    if (c.length > 1) return pickBest(c)
+    // 4) contiene …
+    c = list.filter(p => norm(p.name).includes(n))
+    if (c.length >= 1) return pickBest(c)
+    return null
+  }
+  // -----------------------------------------------------------
+
   function doAssign() {
-    const p = league.list.find((x: any) => x.id === playerId || x.name === playerId)
-    if (!p) return alert('Seleziona un giocatore valido (nome o ID presente nel listone)')
+    const p = resolvePlayer(playerId, league.list)
+    if (!p) {
+      alert('Giocatore non trovato nel listone: scegli dal menu o scrivi il nome completo.')
+      return
+    }
     try {
       assign(youIndex, p.id, p.role, bid)
     } catch (e: any) {
@@ -32,7 +67,7 @@ export default function Auction() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [undo])
+  }, [undo]) // teniamo semplice: shortcut per +5/+10/undo/assign
 
   return (
     <div className="grid md:grid-cols-3 gap-4">
@@ -57,7 +92,14 @@ export default function Auction() {
                 placeholder="Es. Lautaro Martinez"
                 value={playerId}
                 onChange={e => setPlayerId(e.target.value)}
+                list="players"                             // <- suggerimenti
+                onKeyDown={e => { if (e.key === 'Enter') doAssign() }} // invio = assegna
               />
+              <datalist id="players">
+                {league.list.map((p: any) => (
+                  <option key={p.id} value={p.name} />
+                ))}
+              </datalist>
             </div>
 
             <div>
